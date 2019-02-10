@@ -1,0 +1,136 @@
+---
+title: "Statistics 4004: Homework 3"
+subtitle: "Due Thursday Feb 7, start of class"
+date: '`r Sys.Date()`'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For each assignment, turn in by the due date/time.  Late assignments must be arranged prior to submission.  In every case, assignments are to be typed neatly using proper English in Markdown.  
+
+This week, we spoke about Reproducible Research, R and version control, getting, cleaning and munging data and finally, summarizing data.  Again, we are focusing on Reproducible Analysis which, for us, is accomplished by mixing code, figures and text into a cohesive document that fully describes both the process we took to go from data to results and the rational behind our data driven conclusions.  This week we begin creating tidy data sets.  While others have proposed standards for sharing data with statiticians, as practicing data scientists, we realize the often onerous task of getting, cleaning and formatting data is usually in our hands.  Again, we will use BitBucket to turn in and retrieve the homework assignments.  
+
+## Problem 1
+
+Work through the "Getting_and_Cleaning_Data" *swirl* lesson part 3 and "Exploratory_Data_Analysis" *swirl* lesson parts 2, 5 and 7. 
+
+From the R command prompt:  
+install.packages("swirl")  
+library(swirl)  
+install_course("Getting_and_Cleaning_Data")  
+swirl()  
+
+_Nothing to turn in_
+
+## Problem 2
+
+Read through the Git help Chapters 1 and 2. <https://git-scm.com/book/en/v2>
+
+Just good stuff to know, you will NOT be tested on it but may find it helpful if you want a little more Git.
+
+_Nothing to turn in_
+
+## Problem 3
+
+Create a new R Markdown file (file-->new-->R Markdown; author = you, choose PDF).
+
+The filename should be: HW3_pid, i.e. for me it would be HW3_rsettlag.
+
+You will use this new R Markdown file to solve problems 4-7.
+  
+## Problem 4 [1 point]
+
+Scenario: You are given a dataset and being a good data scientist, import, munge and summarize the data.  The summary stats are given in Table 1:  
+
+```{r echo=F, eval=T, include=T}
+require(stats); require(graphics)
+data_summary <- data.frame(apply(anscombe,MARGIN = 2, 
+                    function(x) c(mean(x),sd(x))),
+                    row.names=c("mean","sd"))
+knitr::kable(round(data_summary,2),caption = "summary of Anscombe dataset")
+```
+
+## Part A.
+What are your initial thoughts?
+
+You proceed with creating a linear model as per your collaborators requirements and get the following coefficients:  
+
+```{r echo=F, eval=T, include=T}
+ff <- y ~ x
+mods <- setNames(as.list(1:4), paste0("lm", 1:4))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  ## or   ff[[2]] <- as.name(paste0("y", i))
+  ##      ff[[3]] <- as.name(paste0("x", i))
+  mods[[i]] <- lmi <- lm(ff, data = anscombe)
+}
+knitr::kable(sapply(mods, coef),caption="linear model for x1 vs y1, x2 vs y2, etc in Anscombe data")
+```
+
+## Part B.
+What are your thoughts after seeing the regression coefficient output?
+
+## Part C.
+You then plot the data to obtain the result shown in Figure 1 below.  What is the lesson here?
+
+```{r echo=F, eval=T, include=T, fig.height=4}
+## Now, do what you should have done in the first place: PLOTS
+op <- par(mfrow = c(2, 2), mar = 0.1+c(4,4,1,1), oma =  c(0, 0, 2, 0))
+for(i in 1:4) {
+  ff[2:3] <- lapply(paste0(c("y","x"), i), as.name)
+  plot(ff, data = anscombe, col = "red", pch = 21, bg = "orange", cex = 1.2,
+       xlim = c(3, 19), ylim = c(3, 13))
+  abline(mods[[i]], col = "blue")
+}
+mtext("Linear model for Anscombe's data", outer = TRUE, cex = 1.5)
+par(op)
+```
+
+
+## Problem 5
+
+In these exercises, you will import, munge, clean and summarize datasets from Wu and Hamada's _Experiments: Planning, Design and Analysis_ book used in the graduate experiment design class.  For each dataset, please weave your code and text to describe both your process and observations.  Make sure you create a tidy dataset describing the variables, create a summary table of the data, note any issues with the data, and create a single plot of each dataset highlighting some feature of the data.  For full credit, you will use the dplyr and tidyr packages for munging and summarizing the data. Remember to label your plots including axis and any necessary legends.   
+
+## Part A  [2 point]  
+Brain weight (g) and body weight (kg) for 62 species.    
+<http://www2.isye.gatech.edu/~jeffwu/wuhamadabook/data/BrainandBodyWeight.dat>  
+
+## Part B [2 point]
+Gold Medal performance for Olympic Men's Long Jump, year is coded as 1900=0.  
+<http://www2.isye.gatech.edu/~jeffwu/wuhamadabook/data/LongJumpData.dat>  
+
+## Part C [2 point]
+Coordinate Measurement Machine data.  Two operators measuring 10 parts twice.  
+<http://www2.isye.gatech.edu/~jeffwu/wuhamadabook/data/CMM.dat>  
+
+
+# Optional Extra Credit [1 point]
+Tomato yield data.  Two tomato varieties were planted at 3 different densities.  The experiment was run in triplicate.  Munge and describe as in Problem 5.  For credit, you must use functions found in the tidyverse exclusively, i.e. no base R functions.  
+<http://www2.isye.gatech.edu/~jeffwu/wuhamadabook/data/tomato.dat>
+
+
+# Problem 6
+Please knit this document to PDF (name should be `HW3_pid`) and push to BitBucket:
+
+In the R Terminal, type:  
+\begin{enumerate}
+    \item git pull  
+    \item git add HW3\_pid.[pR]*  (NOTE: this should add two files)  
+    \item git commit -m "final HW3 submission"   
+    \item git push
+\end{enumerate}
+
+## Grading Rubric:
+
+\begin{itemize}
+    \item 1 points: successfully submitted to BitBucket  
+    \item 2 point: Neat, well written document  
+    \item 7 points: correct answers to problems as given  
+    \item 1 bonus point  
+\end{itemize}
+
+
+
