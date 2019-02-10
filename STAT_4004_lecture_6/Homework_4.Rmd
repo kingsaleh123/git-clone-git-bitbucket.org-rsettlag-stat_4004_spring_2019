@@ -1,6 +1,6 @@
 ---
-title: "Statistics 5014: Homework 2"
-subtitle: "Due Monday September 11, 10 am"
+title: "Statistics 4004: Homework 4"
+subtitle: "Due Thursday before class"
 date: '`r Sys.Date()`'
 output: pdf_document
 ---
